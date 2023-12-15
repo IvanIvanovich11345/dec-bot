@@ -54,7 +54,7 @@ bot.onText(/Предложить новость/, (msg) => {
     
     bot.once('message', async (userMsg) => {
         // Отправляем сообщение пользователю о получении
-        bot.sendMessage(chatId, 'Ваше сообщение получено. Ожидайте обработки.');
+        // bot.sendMessage(chatId, 'Ваше сообщение получено. Ожидайте обработки.');
         
         // Пересылаем сообщение администратору
         await bot.forwardMessage(adminChatId, chatId, userMsg.message_id);
