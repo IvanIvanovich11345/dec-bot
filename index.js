@@ -10,7 +10,7 @@ bot.setMyCommands([
     {command: '/start', description: 'Начать с начала'}
 ])
 
-const allowedButtonLabels = ['Предложить новость', 'Получить консультацию'];
+const allowedButtonLabels = ['Предложить новость', 'Получить консультацию', 'Образование'];
 
 const userState = new Map();
 
@@ -24,12 +24,12 @@ bot.onText(/\/start/, (msg) => {
 Здесь вы можете поделиться новостью или получить консультацию  у специалиста. Просто выберите команду, которая вас интересует. Мы здесь, чтобы помочь вам!
     `;
 
+    const keyboardButtons = allowedButtonLabels.map((label) => [{ text: label, callback_data: label }]);
+
     const options = {
         reply_markup: {
-            keyboard: [
-                allowedButtonLabels.map((label) => ({ text: label })),
-                ],
-            resize_keyboard:  false,
+            keyboard: keyboardButtons,
+            resize_keyboard: false,
             one_time_keyboard: false, // Одноразовая клавиатура, исчезает после использования
         }
     };
@@ -86,6 +86,48 @@ bot.onText(/Получить консультацию/, async (msg) => {
     await bot.sendMessage(adminChatId, adminMessage);
 });
 
+
+// Обработчик кнопки "Образование"
+
+
+// Обработчик кнопки "Образование"
+bot.onText(/Образование/, (msg) => {
+    const fs = require('fs');
+    const path = require('path');
+    const chatId = msg.chat.id;
+
+    // Путь к локальным изображениям
+    const imagePath1 = path.join(__dirname, 'images', 'document-green.jpg');
+    const imagePath2 = path.join(__dirname, 'images', 'document-red.jpg');
+    const imagePath3 = path.join(__dirname, 'images', 'uni-list.jpg');
+
+    // Путь к локальным файлам .pdf
+    const pdfPath1 = path.join(__dirname, 'files', 'document-green.pdf');
+    const pdfPath2 = path.join(__dirname, 'files', 'document-red.pdf');
+    const pdfPath3 = path.join(__dirname, 'files', 'uni-list.pdf');
+
+    // Отправляем фото и документы поочередно
+    bot.sendPhoto(chatId, fs.createReadStream(imagePath1))
+        .then(() => {
+            return bot.sendDocument(chatId, fs.createReadStream(pdfPath1));
+        })
+        .then(() => {
+            return bot.sendPhoto(chatId, fs.createReadStream(imagePath2));
+        })
+        .then(() => {
+            return bot.sendDocument(chatId, fs.createReadStream(pdfPath2));
+        })
+        .then(() => {
+            return bot.sendPhoto(chatId, fs.createReadStream(imagePath3));
+        })
+        .then(() => {
+            return bot.sendDocument(chatId, fs.createReadStream(pdfPath3));
+        })
+        .catch((error) => {
+            console.error('Error sending media:', error);
+        });
+});
+
 // Обработчик ошибок
 
 bot.on('message', (msg) => {
@@ -97,14 +139,18 @@ bot.on('message', (msg) => {
     }
 });
 
-bot.onText(/^(?!\/).+/, (msg) => {
+bot.on('message', (msg) => {
+    const text = msg.text;
+
+    // Если это команда /start, ничего не делаем
+    if (text === '/start') {
+        return;
+    }
+
+    // Если сообщение содержит текст, реагируем только на него
     const chatId = msg.chat.id;
-    
-    // Проверяем состояние пользователя
     const state = userState.get(chatId);
-    
     if (state === 'ожидание_кнопок') {
-        // Ошибка: пользователь отправил сообщение после кнопок
         bot.sendMessage(chatId, 'Пожалуйста, используйте только кнопки для взаимодействия.');
     }
 });
