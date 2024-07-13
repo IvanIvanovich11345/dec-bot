@@ -88,6 +88,7 @@ bot.onText(/Больше рекомендаций/, (msg) => {
             [{ text: 'Подготовка устройств', url: 'https://telegra.ph/Pro-podgotovku-ustrojstv-05-23', callback_data: 'button1' }],
             [{ text: 'Пересечение границы', url: 'https://telegra.ph/Peresechenie-granicy-vozmozhnye-problemy-i-podgotovka-05-23', callback_data: 'button2' }],
             [{ text: 'Про метаданные', url: 'https://telegra.ph/Kak-zashchitit-svoyu-privatnost-udalenie-metadannyh-05-23', callback_data: 'button3' }],
+            [{ text: 'Безопасное общение в условиях оккупации', url: 'https://telegra.ph/Bezopasnoe-obshchenie-v-usloviyah-okkupacii-07-13', callback_data: 'button4' }],
         ],
     };
 
